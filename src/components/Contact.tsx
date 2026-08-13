@@ -66,7 +66,7 @@ const [sent, setSent] = useState(false);
   const start = Date.now();
 
   try {
-    const res = await fetch("http://localhost:5000/send-mail", {
+    const res = await fetch("https://backend-arjv.onrender.com/send-mail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
