@@ -7,10 +7,10 @@ const About = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const stats = [
-    { number: "5+", label: "Years Experience" },
-    { number: "50+", label: "Projects Completed" },
-    { number: "30+", label: "Happy Clients" },
-    { number: "10+", label: "Awards Won" },
+    { number: "2", label: "Projects Completed" },
+    { number: "4+", label: "Technologies Mastered" },
+    { number: "100%", label: "Learning Mindset" },
+    { number: "∞", label: "Problem Solving" },
   ];
 
   return (
@@ -24,23 +24,17 @@ const About = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-2xl overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent z-10" />
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=750&fit=crop&crop=face"
-                alt="Portrait"
-                className="w-full h-full object-cover"
-              />
-            </div>
+           <div className="aspect-[4/5] rounded-2xl overflow-hidden relative group">
+  <img
+    src="https://res.cloudinary.com/tf0djpnz/image/upload/v1785999246/photo_mjg16c.jpg"
+    alt="Aditya Patil"
+    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+  />
+
+  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
+</div>
             {/* Floating accent */}
-            <motion.div
-              animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-8 -right-8 w-48 h-48 rounded-2xl glass p-6 flex flex-col justify-center"
-            >
-              <span className="text-4xl font-heading font-bold text-gradient">5+</span>
-              <span className="text-sm text-muted-foreground mt-1">Years of Experience</span>
-            </motion.div>
+          
           </motion.div>
 
           {/* Content Side */}
@@ -60,9 +54,11 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="font-heading text-4xl md:text-5xl font-semibold mt-4 mb-6"
             >
-              Crafting Digital
-              <span className="text-gradient"> Excellence</span>
+              Building Modern
+              <span className="text-gradient"> Web </span>
+              Applications
             </motion.h2>
+            
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -70,9 +66,7 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-muted-foreground leading-relaxed mb-6"
             >
-              I'm a passionate full-stack developer and designer based in San Francisco. 
-              With over 5 years of experience, I specialize in creating beautiful, 
-              functional, and user-centered digital experiences.
+             I'm a Computer Science student and Full Stack Developer passionate about creating modern, scalable, and user-friendly web applications.
             </motion.p>
 
             <motion.p
@@ -81,9 +75,7 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="text-muted-foreground leading-relaxed mb-8"
             >
-              My approach combines technical expertise with creative vision, 
-              ensuring every project not only meets but exceeds expectations. 
-              I believe in clean code, thoughtful design, and continuous learning.
+              My focus is on writing clean code, building responsive user interfaces, and developing efficient backend systems. I continuously learn and explore new technologies to improve my skills and deliver better digital experiences.
             </motion.p>
 
             {/* Stats */}
@@ -101,10 +93,22 @@ const About = () => {
                   transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                   className="text-center p-4 rounded-xl bg-secondary/50"
                 >
-                  <span className="text-2xl md:text-3xl font-heading font-bold text-gradient">
-                    {stat.number}
-                  </span>
-                  <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+<span
+  className={`font-heading text-gradient ${
+    stat.number === "∞"
+      ? "text-7xl md:text-7xl font-medium leading-none relative -top-4"
+      : "text-2xl md:text-3xl font-bold"
+  }`}
+>
+  {stat.number}
+</span>
+<p
+  className={`text-xs text-muted-foreground ${
+    stat.number === "∞" ? "-mt-2 relative -top-6" : "mt-1"
+  }`}
+>
+  {stat.label}
+</p>
                 </motion.div>
               ))}
             </motion.div>

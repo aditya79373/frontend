@@ -1,10 +1,33 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { X } from "lucide-react";
+
+// TODO: replace with your actual achievements (title + image URL)
+const achievements = [
+  {
+    title: "Achievement 1",
+    image: "https://res.cloudinary.com/tf0djpnz/image/upload/v1786548546/Deloitte_page-0001_we2rnq.jpg",
+  },
+  {
+    title: "Achievement 2",
+    image: "https://res.cloudinary.com/tf0djpnz/image/upload/v1786549394/WhatsApp_Image_2026-08-12_at_9.12.52_PM_bkr2gn.jpg",
+  },
+  
+];
 
 const Hero = () => {
-  const titleWords = ["Creative", "Developer", "&", "Designer"];
+  const titleWords = ["Full", "Stack", "Developer"];
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const closeAll = () => {
+    setShowAchievements(false);
+    setSelectedImage(null);
+  };
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+<section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-hero">
+
       {/* Background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -42,7 +65,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-muted-foreground text-lg mb-6 font-body tracking-wide"
           >
-            Hello, I'm John Doe
+            Hello, I'm Aditya Patil
           </motion.p>
 
           {/* Main Title */}
@@ -73,9 +96,8 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 1 }}
             className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-12 font-body leading-relaxed"
           >
-            I craft digital experiences that blend aesthetics with functionality. 
-            Specializing in creating immersive web applications and brand identities 
-            that leave lasting impressions.
+             Building scalable web applications with modern technologies.
+Transforming ideas into fast, secure, and user-friendly digital experiences.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -89,41 +111,133 @@ const Hero = () => {
               href="#work"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full bg-primary text-primary-foreground font-medium transition-all hover:shadow-lg hover:shadow-primary/25"
+              className="px-8 py-4 rounded-full 
+bg-primary text-primary-foreground 
+font-medium transition-all 
+hover:shadow-lg hover:shadow-primary/25
+outline-none focus:outline-none focus:ring-0"
+
             >
-              View My Work
+              Explore Projects
             </motion.a>
-            <motion.a
-              href="#contact"
+
+            <motion.button
+              type="button"
+              onClick={() => setShowAchievements(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full border border-border text-foreground font-medium transition-all hover:bg-secondary"
+              className="px-8 py-4 rounded-full
+border border-primary
+text-primary
+font-medium
+transition-all duration-300
+hover:bg-[#AACBBE]
+hover:border-[#AACBBE]
+hover:text-[#143D2F]
+hover:shadow-lg
+outline-none focus:outline-none focus:ring-0"
             >
-              Get in Touch
-            </motion.a>
+              View My Achievements
+            </motion.button>
+            
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
-        >
+        
+       
+      </div>
+
+      {/* Achievements Modal */}
+      <AnimatePresence>
+        {showAchievements && (
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex justify-center pt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowAchievements(false)}
           >
             <motion.div
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-primary"
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl bg-card border border-border p-6 sm:p-8"
+            >
+              <button
+                type="button"
+                onClick={() => setShowAchievements(false)}
+                              className="absolute top-6 right-6 text-black hover:text-primary transition-colors"
+                aria-label="Close"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <h3 className="font-heading text-2xl font-semibold mb-6 text-foreground">
+                My Achievements
+              </h3>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {achievements.map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImage(item)}
+                    className="group text-left rounded-xl overflow-hidden border border-border hover:border-primary transition-colors"
+                  >
+                    <div className="aspect-video overflow-hidden bg-secondary">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="p-3 text-sm font-medium text-foreground">
+                      {item.title}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Fullscreen Image Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+            onClick={() => setSelectedImage(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-6 right-6 text-white hover:text-primary transition-colors"
+              aria-label="Close"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            <motion.img
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.25 }}
+              src={selectedImage.image}
+              alt={selectedImage.title}
+              onClick={(e) => e.stopPropagation()}
+              onContextMenu={(e) => e.preventDefault()}
+              className="max-w-full max-h-full rounded-lg object-contain select-none"
+              draggable={false}
             />
           </motion.div>
-        </motion.div>
-      </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

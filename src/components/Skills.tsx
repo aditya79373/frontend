@@ -5,24 +5,24 @@ import { useRef } from "react";
 const skills = [
   {
     category: "Frontend",
-    items: ["React", "TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"],
+    items: ["HTML", "CSS", "JavaScript", "React"],
     icon: "🎨",
   },
   {
     category: "Backend",
-    items: ["Node.js", "Python", "PostgreSQL", "GraphQL", "REST APIs"],
+    items: ["Node.js", "Express.js", "Python"],
     icon: "⚙️",
   },
   {
-    category: "Design",
-    items: ["Figma", "Adobe XD", "Photoshop", "Illustrator", "UI/UX"],
-    icon: "✨",
+    category: "Database",
+    items: ["MySQL", "MongoDB", "Supabase"],
+    icon: "🗄️",
   },
   {
-    category: "Tools",
-    items: ["Git", "Docker", "AWS", "Vercel", "CI/CD"],
-    icon: "🛠️",
-  },
+  category: "Tools",
+  items: ["Git", "GitHub", "VS Code", "Tauri"],
+  icon: "🛠️",
+},
 ];
 
 const Skills = () => {
@@ -30,7 +30,7 @@ const Skills = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="skills" className="section-padding bg-secondary/30" ref={ref}>
+    <section id="skills" className="section-padding bg-secondary/90" ref={ref}>
       <div className="container-custom">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
@@ -66,14 +66,25 @@ const Skills = () => {
         {/* Skills Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {skills.map((skill, index) => (
-            <motion.div
-              key={skill.category}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-              whileHover={{ y: -8 }}
-              className="group p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-500 hover-glow"
-            >
+           <motion.div
+  key={skill.category}
+  initial={{ opacity: 0, y: 30 }}
+  animate={isInView ? { opacity: 1, y: 0 } : {}}
+  whileHover={{ y: -8 }}
+ transition={{
+    type: "spring",
+    stiffness: 420,   // 👈 jhatka kam
+    damping: 28,      // 👈 smooth return
+    mass: 0.8,        // 👈 weight feel
+  }}
+  className="
+    group p-6 rounded-2xl
+    bg-card border border-border/50
+    hover:border-primary/50
+    hover-glow
+  "
+>
+
               <motion.span
                 className="text-4xl block mb-4"
                 whileHover={{ scale: 1.2, rotate: 10 }}
