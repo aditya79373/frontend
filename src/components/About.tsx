@@ -96,15 +96,18 @@ const About = () => {
 <span
   className={`font-heading text-gradient ${
     stat.number === "∞"
-      ? "text-7xl md:text-7xl font-medium leading-none relative -top-4"
+      ? "text-5xl sm:text-6xl md:text-7xl font-medium leading-none relative -top-2 sm:-top-3 md:-top-4"
       : "text-2xl md:text-3xl font-bold"
   }`}
 >
   {stat.number}
 </span>
+
 <p
   className={`text-xs text-muted-foreground ${
-    stat.number === "∞" ? "-mt-2 relative -top-6" : "mt-1"
+    stat.number === "∞"
+      ? "-mt-1 sm:-mt-2 relative -top-3 sm:-top-4 md:-top-6"
+      : "mt-1"
   }`}
 >
   {stat.label}
