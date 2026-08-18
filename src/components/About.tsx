@@ -17,6 +17,7 @@ const About = () => {
     <section id="about" className="section-padding relative" ref={ref}>
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
           {/* Image Side */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -24,21 +25,21 @@ const About = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="relative"
           >
-           <div className="aspect-[4/5] rounded-2xl overflow-hidden relative group">
-  <img
-    src="https://res.cloudinary.com/tf0djpnz/image/upload/v1785999246/photo_mjg16c.jpg"
-    alt="Aditya Patil"
-    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-  />
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden relative group">
+              <img
+                src="https://res.cloudinary.com/tf0djpnz/image/upload/v1785999246/photo_mjg16c.jpg"
+                alt="Aditya Patil"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
 
-  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
-</div>
-            {/* Floating accent */}
-          
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
+            </div>
           </motion.div>
 
           {/* Content Side */}
           <div>
+
+            {/* About Me */}
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -48,6 +49,7 @@ const About = () => {
               About Me
             </motion.span>
 
+            {/* Heading */}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -58,24 +60,30 @@ const About = () => {
               <span className="text-gradient"> Web </span>
               Applications
             </motion.h2>
-            
 
+            {/* Paragraph 1 */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-muted-foreground leading-relaxed mb-6"
             >
-             I'm a Computer Science student and Full Stack Developer passionate about creating modern, scalable, and user-friendly web applications.
+              I'm a Computer Science student and Full Stack Developer
+              passionate about creating modern, scalable, and user-friendly
+              web applications.
             </motion.p>
 
+            {/* Paragraph 2 */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.3 }}
               className="text-muted-foreground leading-relaxed mb-8"
             >
-              My focus is on writing clean code, building responsive user interfaces, and developing efficient backend systems. I continuously learn and explore new technologies to improve my skills and deliver better digital experiences.
+              My focus is on writing clean code, building responsive user
+              interfaces, and developing efficient backend systems. I
+              continuously learn and explore new technologies to improve my
+              skills and deliver better digital experiences.
             </motion.p>
 
             {/* Stats */}
@@ -90,32 +98,35 @@ const About = () => {
                   key={stat.label}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.5 + index * 0.1,
+                  }}
                   className="text-center p-4 rounded-xl bg-secondary/50"
                 >
-<span
-  className={`font-heading text-gradient ${
-    stat.number === "∞"
-      ? "text-5xl sm:text-6xl md:text-7xl font-normal leading-none"
-      : "text-2xl md:text-3xl font-bold"
-  }`}
->
-  {stat.number}
-</span>
 
-<p
-  className={`text-xs text-muted-foreground ${
-    stat.number === "∞"
-      ? "mt-2 md:mt-0 md:relative md:-top-6"
-      : "mt-1"
-  }`}
->
-  {stat.label}
-</p>
+                  {/* Number Area */}
+                  <div className="h-16 md:h-20 flex items-center justify-center">
+                    <span
+                      className={`font-heading text-gradient ${
+                        stat.number === "∞"
+                          ? "text-6xl md:text-7xl font-normal leading-none"
+                          : "text-2xl md:text-3xl font-bold"
+                      }`}
+                    >
+                      {stat.number}
+                    </span>
+                  </div>
+
+                  {/* Label */}
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    {stat.label}
+                  </p>
 
                 </motion.div>
               ))}
             </motion.div>
+
           </div>
         </div>
       </div>
