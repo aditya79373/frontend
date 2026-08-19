@@ -106,22 +106,22 @@ const About = () => {
                 >
 
                   {/* Number Area */}
-                  <div className="h-16 md:h-20 flex items-center justify-center">
+                  <div className="h-10 md:h-12 flex items-center justify-center">
                     <span
-                      className={`font-heading text-gradient ${
-                        stat.number === "∞"
-                          ? "text-6xl md:text-7xl font-normal leading-none"
-                          : "text-2xl md:text-3xl font-bold"
-                      }`}
-                    >
-                      {stat.number}
-                    </span>
+  className={`font-heading text-gradient ${
+    stat.number === "∞"
+      ? "text-3xl md:text-4xl font-normal leading-none"
+      : "text-2xl md:text-3xl font-bold leading-none"
+  }`}
+>
+  {stat.number}
+</span>
                   </div>
 
                   {/* Label */}
-                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                    {stat.label}
-                  </p>
+               <p className="text-xs text-muted-foreground mt-1 text-center">
+  {stat.label}
+</p>
 
                 </motion.div>
               ))}
