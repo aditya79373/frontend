@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const projects = [
   {
@@ -12,8 +12,6 @@ const projects = [
       "https://res.cloudinary.com/tf0djpnz/image/upload/v1786383976/Gemini_Generated_Image_lqfq0ulqfq0ulqfq-Photoroom_zl5oob.png",
     tags: ["React", "Node.js", "Express", "Supabase", "Socket.io"],
     link: "https://chatifyapp-s11a.onrender.com/",
-    githubFrontend: "https://github.com/chatify24/Chatify-Frontend", // TODO: replace with actual repo URL
-    githubBackend: "https://github.com/chatify24/Chatify-Backend", // TODO: replace with actual repo URL
   },
   {
     title: "Medisynn",
@@ -22,22 +20,126 @@ const projects = [
       "A modern healthcare platform designed to improve mental well-being with Mood Tracking, Stress Analysis, Daily Wellness Tips, and Guided Breathing Exercises in a clean and responsive interface.",
     image:
       "https://res.cloudinary.com/tf0djpnz/image/upload/v1786011330/ChatGPT_Image_Aug_6_2026_03_41_59_PM_qh1k9g.png",
-    tags: [
-      "React",
-      "Node.js",
-      "Express",
-      "MongoDB",
-      "OpenAI",
-    ],
+    tags: ["React", "Node.js", "Express", "MongoDB", "OpenAI"],
     link: "https://medisynncare24.netlify.app/",
-    githubFrontend: "https://github.com/medisynncare24/Frontend", // TODO: replace with actual repo URL
-    githubBackend: "https://github.com/medisynncare24/Backend", // TODO: replace with actual repo URL
   },
 ];
+
+// Same backend as Contact.tsx
+const API_BASE_URL = "https://backend-arjv.onrender.com";
+
+const Spinner = () => (
+  <motion.div
+    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+    animate={{ rotate: 360 }}
+    transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+  />
+);
+
+const Tick = () => (
+  <motion.svg width="22" height="22" viewBox="0 0 52 52" fill="none">
+    <motion.circle
+      cx="26"
+      cy="26"
+      r="24"
+      stroke="currentColor"
+      strokeWidth="4"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    />
+    <motion.path
+      d="M14 27 L23 35 L38 18"
+      stroke="currentColor"
+      strokeWidth="4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ delay: 0.35, duration: 0.4, ease: "easeOut" }}
+    />
+  </motion.svg>
+);
+
+const inputClasses = `
+  w-full px-4 py-3 rounded-lg
+  bg-background
+  border border-border
+  focus:border-primary
+  focus:outline-none
+  focus:ring-0
+  transition-colors
+  text-foreground
+  placeholder:text-muted-foreground
+`;
 
 const Projects = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+
+  const openModal = (e: React.MouseEvent, title: string) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setActiveProject(title);
+    setSent(false);
+    setLoading(false);
+    setFormData({ name: "", email: "", message: "" });
+  };
+
+  const closeModal = () => {
+    if (loading) return; // don't allow closing mid-request
+    setActiveProject(null);
+    setSent(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setSent(false);
+
+    const start = Date.now();
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/request-code-access`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          projectTitle: activeProject,
+        }),
+      });
+
+      const data = await res.json();
+
+      // minimum spinner time (smooth UX)
+      const elapsed = Date.now() - start;
+      const remaining = Math.max(1200 - elapsed, 0);
+      await new Promise((r) => setTimeout(r, remaining));
+
+      if (data.success) {
+        setFormData({ name: "", email: "", message: "" });
+        setSent(true);
+
+        // auto-close after showing tick
+        setTimeout(() => {
+          setActiveProject(null);
+          setSent(false);
+        }, 2000);
+      }
+    } catch {
+      // optional error state
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="work" className="section-padding" ref={ref}>
@@ -63,8 +165,6 @@ const Projects = () => {
               Featured <span className="text-gradient">Projects</span>
             </motion.h2>
           </div>
-
-          
         </div>
 
         {/* Projects Grid */}
@@ -78,14 +178,13 @@ const Projects = () => {
               className="group relative"
             >
               <a href={project.link} target="_blank" rel="noopener noreferrer" className="block">
-                {/* Image Container */}
-               <div className="relative aspect-video rounded-2xl overflow-hidden mb-6">
+                <div className="relative aspect-video rounded-2xl overflow-hidden mb-6">
                   <motion.img
-  src={project.image}
-  alt={project.title}
-  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
-  style={{ objectPosition: "center 27%" }}
-/>
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+                    style={{ objectPosition: "center 27%" }}
+                  />
                   <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                     <motion.span
                       initial={{ scale: 0 }}
@@ -99,7 +198,6 @@ const Projects = () => {
                   </div>
                 </div>
 
-                {/* Content */}
                 <span className="text-primary text-xs font-medium tracking-wider uppercase">
                   {project.category}
                 </span>
@@ -110,7 +208,6 @@ const Projects = () => {
                   {project.description}
                 </p>
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag) => (
                     <span
@@ -123,37 +220,135 @@ const Projects = () => {
                 </div>
               </a>
 
-              {/* GitHub Link Buttons */}
+              {/* Request Code Access Button (repo is private) */}
               <div className="flex items-center gap-5">
-                <a
-                  href={project.githubFrontend}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  type="button"
+                  onClick={(e) => openModal(e, project.title)}
                   className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.207 11.387.6.113.793-.26.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.238 1.84 1.238 1.07 1.834 2.807 1.304 3.492.997.108-.775.42-1.305.763-1.605-2.665-.303-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.104.823 2.226v3.3c0 .32.19.694.8.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v-6m0 6l-3-3m3 3l3-3M3 12a9 9 0 1018 0 9 9 0 00-18 0z" />
                   </svg>
-                  Frontend
-                </a>
-                <a
-                  href={project.githubBackend}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.207 11.387.6.113.793-.26.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.238 1.84 1.238 1.07 1.834 2.807 1.304 3.492.997.108-.775.42-1.305.763-1.605-2.665-.303-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.104.823 2.226v3.3c0 .32.19.694.8.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-                  </svg>
-                  Backend
-                </a>
+                  Request Code Access
+                </button>
               </div>
             </motion.article>
           ))}
         </div>
       </div>
+
+      {/* Request Access Modal */}
+      <AnimatePresence>
+        {activeProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.25 }}
+              className="bg-card border border-border rounded-2xl p-6 md:p-8 w-full max-w-md relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {!loading && (
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 text-muted-foreground hover:text-primary transition-colors"
+                  aria-label="Close"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+
+              <h3 className="font-heading text-xl font-semibold mb-1">
+                Request Access to {activeProject}
+              </h3>
+              <p className="text-muted-foreground text-sm mb-6">
+                This repo is private. Share your details and I'll follow up.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="req-name" className="block text-sm font-medium text-foreground mb-2">
+                    Your Name
+                  </label>
+                  <input
+                    id="req-name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className={inputClasses}
+                    placeholder="Enter your name"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="req-email" className="block text-sm font-medium text-foreground mb-2">
+                    Your Email
+                  </label>
+                  <input
+                    id="req-email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className={inputClasses}
+                    placeholder="Enter your email"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="req-message" className="block text-sm font-medium text-foreground mb-2">
+                    Your Message
+                  </label>
+                  <textarea
+                    id="req-message"
+                    rows={3}
+                    required
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className={`${inputClasses} resize-none`}
+                    placeholder="Enter your message"
+                  />
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={loading || sent}
+                  whileHover={!loading && !sent ? { scale: 1.02 } : {}}
+                  whileTap={!loading && !sent ? { scale: 0.98 } : {}}
+                  className={`
+                    w-full py-4 rounded-lg
+                    bg-primary text-primary-foreground
+                    font-medium
+                    flex items-center justify-center gap-3
+                    transition-all
+                    ${
+                      loading || sent
+                        ? "opacity-80 cursor-not-allowed"
+                        : "hover:shadow-lg hover:shadow-primary/25"
+                    }
+                  `}
+                >
+                  {loading && <Spinner />}
+                  {sent && <Tick />}
+                  <span>{sent ? "Request Sent" : "Send Request"}</span>
+                </motion.button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
