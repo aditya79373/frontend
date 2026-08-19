@@ -110,7 +110,7 @@ const About = () => {
                    <span
   className={`font-heading text-gradient ${
     stat.number === "∞"
-      ? "text-4xl md:text-5xl font-normal leading-none"
+      ? "text-4xl md:text-6xl font-normal leading-none"
       : "text-2xl md:text-3xl font-bold leading-none"
   }`}
 >
